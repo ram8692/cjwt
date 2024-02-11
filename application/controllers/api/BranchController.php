@@ -21,9 +21,9 @@ class BranchController extends REST_Controller
         $branch_list = $this->BranchModel->get_all_branch();
     
         if (!empty($branch_list)) {
-            $this->response(['status' => 'success', 'message' => 'branches found', 'data' => $branch_list], REST_Controller::HTTP_OK);
+            $this->response(['status' => 'success', 'message' => 'branches found', 'data' => $branch_list], parent::HTTP_OK);
         } else {
-            $this->response(['status' => 'failed', 'message' => 'No branches found'], REST_Controller::HTTP_NOT_FOUND);
+            $this->response(['status' => 'failed', 'message' => 'No branches found'], parent::HTTP_NOT_FOUND);
         }
     }
     
@@ -36,16 +36,16 @@ class BranchController extends REST_Controller
         $this->form_validation->set_data(['name' => $data->name])->set_rules('name', 'Name', 'required|trim|max_length[255]|string');
     
         if ($this->form_validation->run() == FALSE) {
-            $this->response(['status' => 'failed', 'message' => $this->form_validation->error_array()], REST_Controller::HTTP_BAD_REQUEST);
+            $this->response(['status' => 'failed', 'message' => $this->form_validation->error_array()], parent::HTTP_BAD_REQUEST);
             return;
         }
     
         $branch_data = ['name' => $data->name];
     
         if ($this->BranchModel->create($branch_data)) {
-            $this->response(['status' => 'success', 'message' => 'Branch created successfully'], REST_Controller::HTTP_OK);
+            $this->response(['status' => 'success', 'message' => 'Branch created successfully'], parent::HTTP_OK);
         } else {
-            $this->response(['status' => 'failed', 'message' => 'Failed to create branch'], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+            $this->response(['status' => 'failed', 'message' => 'Failed to create branch'], parent::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
     
@@ -62,15 +62,15 @@ class BranchController extends REST_Controller
 
         // Check if the JSON data is valid and contains the 'id' field
         if (!isset($data->id) || !is_numeric($data->id)) {
-            $this->response(['status' => 'failed', 'message' => 'Invalid or missing ID'], REST_Controller::HTTP_BAD_REQUEST);
+            $this->response(['status' => 'failed', 'message' => 'Invalid or missing ID'], parent::HTTP_BAD_REQUEST);
             return;
         }
 
         // Attempt to delete the branch
         if ($this->BranchModel->delete($data->id)) {
-            $this->response(['status' => 'success', 'message' => 'Branch deleted successfully'], REST_Controller::HTTP_OK);
+            $this->response(['status' => 'success', 'message' => 'Branch deleted successfully'], parent::HTTP_OK);
         } else {
-            $this->response(['status' => 'failed', 'message' => 'Failed to delete branch'], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+            $this->response(['status' => 'failed', 'message' => 'Failed to delete branch'], parent::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }
