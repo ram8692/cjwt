@@ -12,13 +12,13 @@ class StudentModel extends CI_Model {
         return $this->db->insert('tbl_students', $data);
     }
 
-    public function is_email_unique($email) {
+    public function is_email_exist($email) {
         // Check if the email exists in the database
         $this->db->where('email', $email);
-        $query = $this->db->get('tbl_students');
+       return $query = $this->db->get('tbl_students')->row();
     
         // If there is no record with the given email, return true (unique)
-        return $query->num_rows() == 0;
+       // return $query->num_rows() == 0;
     }
 
     public function get_all_students($filters = array())

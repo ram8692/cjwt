@@ -41,7 +41,7 @@ class StudentController extends REST_Controller
         }
 
         // Check if email already exists
-        if (!$this->StudentModel->is_email_unique($data->email)) {
+        if (!$this->StudentModel->is_email_exist($data->email)) {
             $this->response(['status' => 'failed', 'message' => 'Email already exists'], parent::HTTP_BAD_REQUEST);
             return;
         }
@@ -172,5 +172,42 @@ class StudentController extends REST_Controller
             $this->response(['status' => 'failed', 'message' => 'Failed to update student'], parent::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    public function login_post()
+    {
+        // Decode the JSON data from the request
+        $data = json_decode($this->input->raw_input_stream);
+
+        // Set validation rules
+        $this->form_validation->set_data((array) $data);
+        $this->form_validation->set_rules('email', 'Email', 'required|valid_email');
+        $this->form_validation->set_rules('password', 'Password', 'required|min_length[8]');
+
+        // Run validation
+        if ($this->form_validation->run() == FALSE) {
+            $this->response(['status' => 'failed', 'message' => validation_errors()], parent::HTTP_BAD_REQUEST);
+            return;
+        }
+
+        $email = $data->email;
+        $password = $data->password;
+
+        $studentDetails = $this->StudentModel->is_email_exist($email);
+
+        if (empty($studentDetails)) {
+            $this->response(['status' => 'failed', 'message' => 'Email Not Found'], parent::HTTP_NOT_FOUND);
+            return;
+        }
+
+        if (!password_verify($password, $studentDetails->password)) {
+            $this->response(['status' => 'failed', 'message' => 'Incorrect Password'], parent::HTTP_BAD_REQUEST);
+            return;
+        }
+
+        // Generate token and send response
+        $token = authorization::generateToken((array)$studentDetails);
+        $this->response(['status' => 'success', 'message' => 'Login Successful', 'token' => $token], parent::HTTP_OK);
+    }
+
 
 }

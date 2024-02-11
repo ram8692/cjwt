@@ -103,7 +103,7 @@ $autoload['helper'] = array();
 | config files.  Otherwise, leave it blank.
 |
 */
-$autoload['config'] = array();
+$autoload['config'] = array("jwt"); //by doing this jwt variables will be accessable in authorization helper file
 
 /*
 | -------------------------------------------------------------------
