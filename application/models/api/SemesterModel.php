@@ -7,6 +7,11 @@ class SemesterModel extends CI_Model {
         $this->load->database();
     }
 
+    public function create_project($data)
+    {
+        return $this->db->insert('tbl_semester_projects', $data);
+    }
+
 
 }
 
