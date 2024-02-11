@@ -209,5 +209,33 @@ class StudentController extends REST_Controller
         $this->response(['status' => 'success', 'message' => 'Login Successful', 'token' => $token], parent::HTTP_OK);
     }
 
+    public function student_details_get()
+{
+    // Get the Authorization header
+    $token = $this->input->get_request_header('Authorization');
+
+    // Check if the token is provided
+    if (!$token) {
+        $this->response(['status' => 'failed', 'message' => 'Authorization header missing'], parent::HTTP_UNAUTHORIZED);
+        return;
+    }
+
+    // Validate the token
+    try {
+        $student_data = authorization::validateToken($token);
+        if ($student_data !== false) {
+            // Token is valid, send student details in the response
+            $this->response(['status' => 'success', 'message' => 'Student Details', 'data' => $student_data], parent::HTTP_OK);
+        } else {
+            // Invalid token
+            $this->response(['status' => 'failed', 'message' => 'Invalid Token'], parent::HTTP_UNAUTHORIZED);
+        }
+    } catch (\Throwable $th) {
+        // Error occurred while validating token
+        $this->response(['status' => 'failed', 'message' => 'Invalid Token'], parent::HTTP_UNAUTHORIZED);
+    }
+}
+
+
 
 }
